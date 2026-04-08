@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>카드 뒤집기 게임</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <h1>Card Matching Game</h1>
+        <div class="session">
+          <span id="sessionStatus">로그인 확인 중...</span>
+          <button id="loginBtn" type="button">로그인</button>
+          <button id="logoutBtn" type="button" class="hidden">로그아웃</button>
+        </div>
+      </header>
+
+      <section class="panel game-panel">
+        <div class="stats">
+          <span>시도: <strong id="attempts">0</strong></span>
+          <span>시간: <strong id="time">0.0s</strong></span>
+          <span>점수: <strong id="score">0</strong></span>
+        </div>
+        <div id="message" class="message">카드를 뒤집어 매칭을 시작하세요.</div>
+        <div id="board" class="board" aria-label="card board"></div>
+        <div class="actions">
+          <button id="restartBtn" type="button">다시 시작</button>
+        </div>
+      </section>
+
+      <section class="panel auth-panel">
+        <h2>로그인</h2>
+        <form id="authForm">
+          <input id="emailInput" type="email" placeholder="email@example.com" required />
+          <input id="passwordInput" type="password" placeholder="비밀번호 (6자 이상)" minlength="6" required />
+          <button type="submit" name="authAction" value="signIn">로그인</button>
+          <button type="submit" name="authAction" value="signUp">회원가입</button>
+        </form>
+      </section>
+
+      <section class="panel leaderboard-panel">
+        <h2>실시간 랭킹</h2>
+        <p id="myBest">내 최고 점수: -</p>
+        <ol id="leaderboard"></ol>
+      </section>
+    </main>
+
+    <script src="./src/config.js"></script>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+  </html>
