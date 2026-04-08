@@ -1,0 +1,9 @@
+{
+  "name": "card-matching-game",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node scripts/generate-config.mjs",
+    "prepare:config": "node scripts/generate-config.mjs"
+  }
+}
