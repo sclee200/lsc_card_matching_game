@@ -114,7 +114,13 @@ function resetGame() {
 async function updateSession(user) {
   currentUser = user;
   if (currentUser) {
-    await ensureProfile(currentUser);
+    try {
+      await ensureProfile(currentUser);
+    } catch (error) {
+      // Some sign-up flows do not create an authenticated session immediately.
+      // In that case, profile upsert can be blocked by RLS and should not break UI.
+      setText(messageEl, "세션 반영 중입니다. 로그인 후 다시 시도하세요.");
+    }
     setText(sessionStatusEl, `로그인: ${currentUser.email}`);
     toggleHidden(loginBtn, true);
     toggleHidden(logoutBtn, false);
@@ -157,13 +163,21 @@ function bindEvents() {
     authPending = true;
     submitter.disabled = true;
     try {
-      const user =
-        authAction === "signIn"
-          ? await signInWithEmail(email, password)
-          : await signUpWithEmail(email, password);
-
-      await updateSession(user || (await getSessionUser()));
-      setText(messageEl, authAction === "signIn" ? "로그인 완료" : "회원가입 완료");
+      if (authAction === "signIn") {
+        const user = await signInWithEmail(email, password);
+        await updateSession(user || (await getSessionUser()));
+        setText(messageEl, "로그인 완료");
+      } else {
+        await signUpWithEmail(email, password);
+        const sessionUser = await getSessionUser();
+        if (sessionUser) {
+          await updateSession(sessionUser);
+          setText(messageEl, "회원가입 완료");
+        } else {
+          await updateSession(null);
+          setText(messageEl, "회원가입 요청 완료. 이메일 인증 후 로그인하세요.");
+        }
+      }
     } catch (error) {
       const text = String(error.message || "");
       if (text.includes("rate limit")) {
